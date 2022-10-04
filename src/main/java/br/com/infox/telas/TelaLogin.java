@@ -25,7 +25,8 @@ public class TelaLogin extends javax.swing.JFrame {
         digitado nas caixas de texto. O '?' é substituído pelo conteúdo das variáveis*/
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtUsuario.getText());
-            pst.setString(2, txtSenha.getText());
+            String captura = new String(txtSenha.getPassword());
+            pst.setString(2, captura);
 
             // A linha abaixo executa a consulta ao banco de dados(query)
             rs = pst.executeQuery();
