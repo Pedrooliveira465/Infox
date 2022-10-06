@@ -6,6 +6,7 @@ package br.com.infox.telas;
 
 import java.sql.*;
 import br.com.infox.dal.ModuloConexao;
+import java.awt.Color;
 import javax.swing.JOptionPane;
 
 /**
@@ -13,7 +14,7 @@ import javax.swing.JOptionPane;
  * @author Pedro Lucas
  */
 public class TelaLogin extends javax.swing.JFrame {
-
+    
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
@@ -30,12 +31,27 @@ public class TelaLogin extends javax.swing.JFrame {
 
             // A linha abaixo executa a consulta ao banco de dados(query)
             rs = pst.executeQuery();
-            
+
+            // Se existir um usuário e senha correspondente
             if (rs.next()) {
-                TelaPrincipal principal = new TelaPrincipal();
-                principal.setVisible(true);
-                this.dispose();
-                conexao.close();
+                // A linha abaixo obtem o conteúdo do campo 'perfil' da tabela tbusuarios
+                String perfil = rs.getString(6);
+
+                // A estrutura abaixo faz o tratamento do perfil do usuário
+                if (perfil.equals("admin")) {
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    TelaPrincipal.menuRelatorio.setEnabled(true);
+                    TelaPrincipal.menuCadastroUsuario.setEnabled(true);
+                    TelaPrincipal.lblUsuario.setText(rs.getString(2));
+                    TelaPrincipal.lblUsuario.setForeground(Color.red);
+                    this.dispose();
+                } else {
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    TelaPrincipal.lblUsuario.setText(rs.getString(2));
+                    this.dispose();
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "usuário e/ou senha inválido(s)");
             }
