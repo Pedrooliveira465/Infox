@@ -4,17 +4,63 @@
  */
 package br.com.infox.telas;
 
+import java.sql.*;
+import br.com.infox.dal.ModuloConexao;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Pedro Lucas
  */
 public class TelaUsuario extends javax.swing.JInternalFrame {
+// Usando a variável 'conexao' do DAL
+
+    Connection conexao = null;
+
+    // Criando variáveis especiais para conexão com o banco
+    // Prepared Statement e ResultSet são frameworks do pacote java.sql
+    // E servem para preparar e executar as instruções SQL
+    PreparedStatement pst = null;
+    ResultSet rs = null;
 
     /**
      * Creates new form TelaUsuario
      */
     public TelaUsuario() {
         initComponents();
+        conexao = ModuloConexao.conector();
+    }
+
+    private void consultar() {
+        String sql = "select * from tbusuarios where iduser = ?";
+
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtUsuarioId.getText());
+            rs = pst.executeQuery();
+            
+            if (rs.next()) {
+                txtUsuarioNome.setText(rs.getString(2));
+                txtUsuarioFone.setText(rs.getString(3));
+                txtUsuarioLogin.setText(rs.getString(4));
+                txtUsuarioSenha.setText(rs.getString(5));
+                // A linha abaixo se refere ao combobox
+                cboUsuarioPerfil.setSelectedItem(rs.getString(6));
+            } else {
+                JOptionPane.showMessageDialog(null, "Usuário não cadastrado");
+                
+                // As linhas abaixo "limpam" os campos
+                txtUsuarioNome.setText(null);
+                txtUsuarioFone.setText(null);
+                txtUsuarioLogin.setText(null);
+                txtUsuarioSenha.setText(null);
+                cboUsuarioPerfil.setSelectedItem(null);
+                
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 
     /**
@@ -63,6 +109,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         jLabel6.setText("Fone");
 
         btnUsuarioConsultar.setText("Consultar");
+        btnUsuarioConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuarioConsultarActionPerformed(evt);
+            }
+        });
 
         btnUsuarioAlterar.setText("Alterar");
 
@@ -83,9 +134,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtUsuarioId, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(txtUsuarioId, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtUsuarioNome)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -153,6 +202,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
 
         setBounds(0, 0, 640, 480);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnUsuarioConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioConsultarActionPerformed
+        // Chamando o método 'consultar'
+        consultar();
+    }//GEN-LAST:event_btnUsuarioConsultarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
