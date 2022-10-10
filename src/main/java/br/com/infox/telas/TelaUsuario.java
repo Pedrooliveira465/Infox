@@ -142,6 +142,39 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         }
     }
 
+    // Método responsável pela remoção de usuários
+    private void remover() {
+        // A estrutura abaixo confirma a remoção do usuário
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário?",
+                "Atenção", JOptionPane.YES_NO_OPTION);
+
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbusuarios where iduser = ?";
+
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtUsuarioId.getText());
+                int apagado = pst.executeUpdate();
+
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "Usuário removido com sucesso");
+
+                    // As linhas abaixo "limpam" os campos
+                    txtUsuarioId.setText(null);
+                    txtUsuarioNome.setText(null);
+                    txtUsuarioFone.setText(null);
+                    txtUsuarioLogin.setText(null);
+                    txtUsuarioSenha.setText(null);
+                    
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -203,6 +236,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         });
 
         btnUsuarioDeletar.setText("Remover");
+        btnUsuarioDeletar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuarioDeletarActionPerformed(evt);
+            }
+        });
 
         btnUsuarioAdicionar.setText("Adicionar");
         btnUsuarioAdicionar.addActionListener(new java.awt.event.ActionListener() {
@@ -320,6 +358,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         // Chamando o método "alterar"
         alterar();
     }//GEN-LAST:event_btnUsuarioAlterarActionPerformed
+
+    private void btnUsuarioDeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioDeletarActionPerformed
+        // Chamando o método "remover"
+        remover();
+    }//GEN-LAST:event_btnUsuarioDeletarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
