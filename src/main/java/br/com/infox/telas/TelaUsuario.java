@@ -103,6 +103,45 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
 
     }
 
+    // Criando o método para alterar os dados do usuário
+    private void alterar() {
+        String sql = "update tbusuarios set usuario = ?, fone = ?, login = ?, senha = ?, perfil = ?"
+                + "where iduser = ?";
+
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtUsuarioNome.getText());
+            pst.setString(2, txtUsuarioFone.getText());
+            pst.setString(3, txtUsuarioLogin.getText());
+            pst.setString(4, txtUsuarioSenha.getText());
+            pst.setString(5, cboUsuarioPerfil.getSelectedItem().toString());
+            pst.setString(6, txtUsuarioId.getText());
+
+            // Validação dos campos obrigatórios
+            if (txtUsuarioId.getText().isEmpty() || (txtUsuarioNome.getText().isEmpty())
+                    || (txtUsuarioLogin.getText().isEmpty()) || (txtUsuarioSenha.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
+            } else {
+
+                // A linha abaixo atualiza a tabela usuarios com os dados do formulário
+                int adicionado = pst.executeUpdate();
+
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Dados do usuário alterados com sucesso");
+
+                    // As linhas abaixo "limpam" os campos
+                    txtUsuarioId.setText(null);
+                    txtUsuarioNome.setText(null);
+                    txtUsuarioFone.setText(null);
+                    txtUsuarioLogin.setText(null);
+                    txtUsuarioSenha.setText(null);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -157,6 +196,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         });
 
         btnUsuarioAlterar.setText("Alterar");
+        btnUsuarioAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuarioAlterarActionPerformed(evt);
+            }
+        });
 
         btnUsuarioDeletar.setText("Remover");
 
@@ -271,6 +315,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         // Chamando o método "adicionar"
         adicionar();
     }//GEN-LAST:event_btnUsuarioAdicionarActionPerformed
+
+    private void btnUsuarioAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioAlterarActionPerformed
+        // Chamando o método "alterar"
+        alterar();
+    }//GEN-LAST:event_btnUsuarioAlterarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
