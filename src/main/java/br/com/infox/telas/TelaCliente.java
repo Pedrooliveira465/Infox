@@ -4,17 +4,63 @@
  */
 package br.com.infox.telas;
 
+import java.sql.*;
+import br.com.infox.dal.ModuloConexao;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Pedro Lucas
  */
 public class TelaCliente extends javax.swing.JInternalFrame {
 
+    Connection conexao = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
     /**
      * Creates new form TelaCliente
      */
     public TelaCliente() {
         initComponents();
+        conexao = ModuloConexao.conector();
+    }
+
+    // Método para adicionar clientes
+    private void adicionar() {
+        String sql = "insert into tbclientes(nomecli, endcli, fonecli, emailcli)"
+                + "values(?, ?, ?, ?)";
+
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtClienteNome.getText());
+            pst.setString(2, txtClienteEndereco.getText());
+            pst.setString(3, txtClienteTelefone.getText());
+            pst.setString(4, txtClienteEmail.getText());
+
+            // Validação dos campos obrigatórios
+            if (txtClienteNome.getText().isEmpty() || (txtClienteTelefone.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
+            } else {
+
+                // A linha abaixo atualiza a tabela clientes com os dados do formulário
+                int adicionado = pst.executeUpdate();
+
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Cliente adicionado com sucesso");
+
+                    // As linhas abaixo "limpam" os campos
+                    txtClienteNome.setText(null);
+                    txtClienteEndereco.setText(null);
+                    txtClienteTelefone.setText(null);
+                    txtClienteEmail.setText(null);
+                    
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
     }
 
     /**
@@ -50,11 +96,11 @@ public class TelaCliente extends javax.swing.JInternalFrame {
 
         jLabel1.setText("*Campos obrigatórios");
 
-        jLabel2.setText("*Nome");
+        jLabel2.setText("* Nome");
 
         jLabel3.setText("Endereço");
 
-        jLabel4.setText("*Telefone");
+        jLabel4.setText("* Telefone");
 
         jLabel5.setText("email");
 
@@ -63,6 +109,11 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         btnRemover.setText("Remover");
 
         btnAdicionar.setText("Adicionar");
+        btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Pesquisar");
 
@@ -96,27 +147,6 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)))
                 .addGap(27, 27, 27))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(62, 62, 62)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtClienteNome, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtClienteEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtClienteTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtClienteEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAdicionar)
@@ -125,6 +155,26 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                 .addGap(52, 52, 52)
                 .addComponent(btnRemover)
                 .addGap(135, 135, 135))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel5))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(62, 62, 62)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel2)
+                                .addComponent(jLabel3)))))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtClienteNome, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtClienteTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(txtClienteEmail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                        .addComponent(txtClienteEndereco, javax.swing.GroupLayout.Alignment.LEADING)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -154,16 +204,21 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtClienteEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addGap(32, 32, 32)
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRemover)
                     .addComponent(btnAlterar)
                     .addComponent(btnAdicionar))
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         setBounds(0, 0, 640, 480);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
+        // Chamando o método "adicionar"
+        adicionar();
+    }//GEN-LAST:event_btnAdicionarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
