@@ -95,6 +95,10 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         txtClienteEndereco.setText(tblClientes.getModel().getValueAt(setar, 2).toString());
         txtClienteTelefone.setText(tblClientes.getModel().getValueAt(setar, 3).toString());
         txtClienteEmail.setText(tblClientes.getModel().getValueAt(setar, 4).toString());
+
+        // A linha abaixo desabilita o botão adicionar
+        btnAdicionar.setEnabled(false);
+
     }
 
     // Criando o método para alterar os dados do cliente
@@ -128,10 +132,49 @@ public class TelaCliente extends javax.swing.JInternalFrame {
                     txtClienteEmail.setText(null);
                     txtClienteId.setText(null);
 
+                    // A linha abaixo habilita o botão adicionar
+                    btnAdicionar.setEnabled(true);
+
                 }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    // Método responsável pela remoção dos clientes
+    private void remover() {
+        // A estrutura abaixo confirma a remoção do cliente
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este cliente?",
+                "Atenção", JOptionPane.YES_NO_OPTION);
+
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbclientes where idcli = ?";
+
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtClienteId.getText());
+                int apagado = pst.executeUpdate();
+
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "Cliente removido com sucesso");
+
+                    // As linhas abaixo "limpam" os campos
+                    txtClienteNome.setText(null);
+                    txtClienteEndereco.setText(null);
+                    txtClienteTelefone.setText(null);
+                    txtClienteEmail.setText(null);
+                    txtClienteId.setText(null);
+
+                    // A linha abaixo habilita o botão adicionar
+                    btnAdicionar.setEnabled(true);
+
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+
         }
     }
 
@@ -186,6 +229,11 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         });
 
         btnRemover.setText("Remover");
+        btnRemover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverActionPerformed(evt);
+            }
+        });
 
         btnAdicionar.setText("Adicionar");
         btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
@@ -335,6 +383,11 @@ public class TelaCliente extends javax.swing.JInternalFrame {
         // Chamando o método para alterar clientes
         alterar();
     }//GEN-LAST:event_btnAlterarActionPerformed
+
+    private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
+        // Chamando o método para remover um cliente
+        remover();
+    }//GEN-LAST:event_btnRemoverActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
