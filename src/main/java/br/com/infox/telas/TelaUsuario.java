@@ -50,11 +50,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             } else {
                 JOptionPane.showMessageDialog(null, "Usuário não cadastrado");
 
-                // As linhas abaixo "limpam" os campos
-                txtUsuarioNome.setText(null);
-                txtUsuarioFone.setText(null);
-                txtUsuarioLogin.setText(null);
-                txtUsuarioSenha.setText(null);
+                // A linha abaixo "limpa" os campos
+                limpar();
 
             }
 
@@ -89,12 +86,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Usuário adicionado com sucesso");
 
-                    // As linhas abaixo "limpam" os campos
-                    txtUsuarioId.setText(null);
-                    txtUsuarioNome.setText(null);
-                    txtUsuarioFone.setText(null);
-                    txtUsuarioLogin.setText(null);
-                    txtUsuarioSenha.setText(null);
+                    // A linha abaixo "limpa" os campos
+                    limpar();
                 }
             }
         } catch (Exception e) {
@@ -129,12 +122,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Dados do usuário alterados com sucesso");
 
-                    // As linhas abaixo "limpam" os campos
-                    txtUsuarioId.setText(null);
-                    txtUsuarioNome.setText(null);
-                    txtUsuarioFone.setText(null);
-                    txtUsuarioLogin.setText(null);
-                    txtUsuarioSenha.setText(null);
+                    // A linha abaixo "limpa" os campos
+                    limpar();
                 }
             }
         } catch (Exception e) {
@@ -159,13 +148,8 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
                 if (apagado > 0) {
                     JOptionPane.showMessageDialog(null, "Usuário removido com sucesso");
 
-                    // As linhas abaixo "limpam" os campos
-                    txtUsuarioId.setText(null);
-                    txtUsuarioNome.setText(null);
-                    txtUsuarioFone.setText(null);
-                    txtUsuarioLogin.setText(null);
-                    txtUsuarioSenha.setText(null);
-                    
+                    // A linha abaixo "limpa" os campos
+                    limpar();
                 }
 
             } catch (Exception e) {
@@ -173,6 +157,15 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
             }
 
         }
+    }
+
+    // Método para limpar os campos do formulário
+    private void limpar() {
+        txtUsuarioId.setText(null);
+        txtUsuarioNome.setText(null);
+        txtUsuarioFone.setText(null);
+        txtUsuarioLogin.setText(null);
+        txtUsuarioSenha.setText(null);
     }
 
     /**
