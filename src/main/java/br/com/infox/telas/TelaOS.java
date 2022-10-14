@@ -185,6 +185,38 @@ public class TelaOS extends javax.swing.JInternalFrame {
 
     }
 
+    // Método para remover uma os
+    private void remover_os() {
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir esta OS?",
+                "Atenção", JOptionPane.YES_NO_OPTION);
+
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbos where os = ?";
+
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtOs.getText());
+                int apagado = pst.executeUpdate();
+
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "OS removida com sucesso");
+                    limpar();
+
+                    // Habilitar os objetos 
+                    btnOsEmitir.setEnabled(true);
+                    TxtClientePesquisar.setEnabled(true);
+                    tblClientes.setVisible(true);
+
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+
+        }
+
+    }
+
     // Método para limpar os campos do formulário
     private void limpar() {
         txtOs.setText(null);
@@ -432,6 +464,11 @@ public class TelaOS extends javax.swing.JInternalFrame {
         });
 
         btnOsRemover.setText("Remover");
+        btnOsRemover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOsRemoverActionPerformed(evt);
+            }
+        });
 
         btnOsImprimir.setText("Imprimir");
 
@@ -569,6 +606,11 @@ public class TelaOS extends javax.swing.JInternalFrame {
         // Chamando o método "alterar_os"
         alterar_os();
     }//GEN-LAST:event_btnOsAlterarActionPerformed
+
+    private void btnOsRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOsRemoverActionPerformed
+        // Chamando o método "remover_os"
+        remover_os();
+    }//GEN-LAST:event_btnOsRemoverActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
