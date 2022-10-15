@@ -70,7 +70,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
 
             // Validação dos campos obrigatórios
             if ((txtClienteId.getText().isEmpty()) || (txtOsEquipamento.getText().isEmpty())
-                    || (txtOsDefeito.getText().isEmpty())) {
+                    || (txtOsDefeito.getText().isEmpty()) || cboOsSituacao.getSelectedItem().equals(" ")) {
 
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
 
@@ -79,7 +79,9 @@ public class TelaOS extends javax.swing.JInternalFrame {
 
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "OS emitida com sucesso");
-                    limpar();
+                    btnOsEmitir.setEnabled(false);
+                    btnOsPesquisar.setEnabled(false);
+                    btnOsImprimir.setEnabled(true);
                 }
 
             }
@@ -94,7 +96,8 @@ public class TelaOS extends javax.swing.JInternalFrame {
     private void pesquisar_os() {
         // A linha abaixo cria uma caixa de entrada do tipo JOption Pane
         String num_os = JOptionPane.showInputDialog("Número da OS");
-        String sql = "select * from tbos where os = " + num_os;
+        String sql = "select os, date_format(data_os, '%d/%m/%Y - %H:%i'), tipo, situacao, "
+                + "equipamento, defeito, servico, tecnico, valor, idcli from tbos where os = " + num_os;
 
         try {
             pst = conexao.prepareStatement(sql);
@@ -128,6 +131,11 @@ public class TelaOS extends javax.swing.JInternalFrame {
                 TxtClientePesquisar.setEnabled(false);
                 tblClientes.setVisible(false);
 
+                // Ativar demais botões
+                btnOsAlterar.setEnabled(true);
+                btnOsRemover.setEnabled(true);
+                btnOsImprimir.setEnabled(true);
+
             } else {
                 JOptionPane.showMessageDialog(null, "OS não cadastrada");
             }
@@ -159,7 +167,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
 
             // Validação dos campos obrigatórios
             if ((txtClienteId.getText().isEmpty()) || (txtOsEquipamento.getText().isEmpty())
-                    || (txtOsDefeito.getText().isEmpty())) {
+                    || (txtOsDefeito.getText().isEmpty()) || cboOsSituacao.getSelectedItem().equals(" ")) {
 
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
 
@@ -169,12 +177,6 @@ public class TelaOS extends javax.swing.JInternalFrame {
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "OS alterada com sucesso");
                     limpar();
-
-                    // Habilitar os objetos 
-                    btnOsEmitir.setEnabled(true);
-                    TxtClientePesquisar.setEnabled(true);
-                    tblClientes.setVisible(true);
-
                 }
 
             }
@@ -201,12 +203,6 @@ public class TelaOS extends javax.swing.JInternalFrame {
                 if (apagado > 0) {
                     JOptionPane.showMessageDialog(null, "OS removida com sucesso");
                     limpar();
-
-                    // Habilitar os objetos 
-                    btnOsEmitir.setEnabled(true);
-                    TxtClientePesquisar.setEnabled(true);
-                    tblClientes.setVisible(true);
-
                 }
 
             } catch (Exception e) {
@@ -217,16 +213,32 @@ public class TelaOS extends javax.swing.JInternalFrame {
 
     }
 
-    // Método para limpar os campos do formulário
+    // Método para limpar campos e gerenciar os botões 
     private void limpar() {
+        // Limpam os campos
         txtOs.setText(null);
         txtData.setText(null);
+        TxtClientePesquisar.setText(null);
         txtClienteId.setText(null);
         txtOsEquipamento.setText(null);
         txtOsDefeito.setText(null);
         txtOsServico.setText(null);
         txtOsTecnico.setText(null);
         txtOsValorTotal.setText(null);
+        ((DefaultTableModel) tblClientes.getModel()).setRowCount(0);
+        cboOsSituacao.setSelectedItem(" ");
+
+        // Habilitar os objetos 
+        btnOsEmitir.setEnabled(true);
+        btnOsPesquisar.setEnabled(true);
+        TxtClientePesquisar.setEnabled(true);
+        tblClientes.setVisible(true);
+
+        // Desabilitar os botões
+        btnOsAlterar.setEnabled(false);
+        btnOsRemover.setEnabled(false);
+        btnOsImprimir.setEnabled(false);
+
     }
 
     /**
@@ -364,7 +376,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Situação");
 
-        cboOsSituacao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Na bancada", "Entrega OK", "Orçamento REPROVADO", "Aguardando APROVAÇÃO", "Aguardando peças", "Abandonado pelo cliente", "Retornou" }));
+        cboOsSituacao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", "Na bancada", "Entrega OK", "Orçamento REPROVADO", "Aguardando APROVAÇÃO", "Aguardando peças", "Abandonado pelo cliente", "Retornou" }));
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Cliente"));
 
@@ -457,6 +469,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
         });
 
         btnOsAlterar.setText("Alterar");
+        btnOsAlterar.setEnabled(false);
         btnOsAlterar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOsAlterarActionPerformed(evt);
@@ -464,6 +477,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
         });
 
         btnOsRemover.setText("Remover");
+        btnOsRemover.setEnabled(false);
         btnOsRemover.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOsRemoverActionPerformed(evt);
@@ -471,6 +485,7 @@ public class TelaOS extends javax.swing.JInternalFrame {
         });
 
         btnOsImprimir.setText("Imprimir");
+        btnOsImprimir.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
